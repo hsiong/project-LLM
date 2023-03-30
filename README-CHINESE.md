@@ -68,15 +68,9 @@
 
 - chatbox - 使用 ChatGPT API 的桌面应用程序：https://github.com/Bin-Huang/chatbox
 - ChatGPT-Next-Web - 单击即可部署自己的 ChatGPT 网站：https://github.com/Yidadaa/Chat
-
-
-
-## 基于 ChatGpt API 的聊天应用
-
-- chatbox - ChatGPT API 的桌面应用：https://github.com/Bin-Huang/chatbox
-- ChatGPT-Next-Web - 一键部署自己的 ChatGPT Web：https://github.com/Yidadaa/ChatGPT-Next-Web
 - laf - 使用 Laf 云开发搭建 ChatGPT Web：https://icloudnative.io/posts/build-chatgpt-web-using-laf/
 - 
+
 
 ## 学术研究
 
