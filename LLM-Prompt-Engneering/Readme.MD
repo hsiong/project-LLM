@@ -1,3 +1,6 @@
+# Reference
++ https://www.promptingguide.ai/
+
 # Introduction
 
 ## LLM Settings
