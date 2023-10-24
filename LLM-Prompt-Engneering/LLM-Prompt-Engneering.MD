@@ -703,3 +703,9 @@ In the first answer, the model was very confident but in the second not so much.
 ## Tree of Thoughts (ToT)
 
 For complex tasks that require exploration or strategic lookahead, traditional or simple prompting techniques fall short. `Tree of Thoughts (ToT)`, a framework that generalizes over chain-of-thought prompting and encourages exploration over thoughts that serve as intermediate steps for general problem solving with language models.
+
+ToT maintains a tree of thoughts, where thoughts represent coherent language sequences that serve as intermediate steps toward solving a problem. This approach enables an LM to self-evaluate the progress intermediate thoughts make towards solving a problem through a deliberate reasoning process. The LM's ability to generate and evaluate thoughts is then combined with search algorithms (e.g., breadth-first search and depth-first search) to enable systematic exploration of thoughts with lookahead and backtracking.
+
+The ToT framework is illustrated below:
+
+![TOT](https://www.promptingguide.ai/_next/image?url=%2F_next%2Fstatic%2Fmedia%2FTOT.3b13bc5e.png&w=3840&q=75)
