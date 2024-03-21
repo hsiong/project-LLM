@@ -1,0 +1,4 @@
+openai
+httpx[socks] == 1.0.0b0
+pydantic
+Flask
