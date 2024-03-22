@@ -5,13 +5,13 @@ from pydantic import BaseModel
 
 
 class PerMessage(BaseModel):
-    role: str # 
-    content: str 
+    role: str  # 声明各成员变量
+    content: str
 
 
 API_BASE = "https://api.lingyiwanwu.com/v1"
-API_KEY = "myKey"
-MODEL = "yi-34b-chat-0205"
+API_KEY = "mykey"
+MODEL = "yi-34b-chat-200k"
 
 
 def excute(messages: List[PerMessage]):
@@ -19,8 +19,7 @@ def excute(messages: List[PerMessage]):
     global API_KEY
     global MODEL
 
-    messages = [message.dict() for message in messages] # 转为 json 对象
-    print(f'messages: {messages}')
+    messages = [message.dict() for message in messages]  # 转为 json 对象
 
     client = OpenAI(
         # defaults to os.environ.get("OPENAI_API_KEY")
@@ -32,3 +31,4 @@ def excute(messages: List[PerMessage]):
         messages=messages
     )
     print(completion)
+    return completion.dict()
