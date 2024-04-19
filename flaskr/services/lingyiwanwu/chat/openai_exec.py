@@ -14,7 +14,7 @@ class PerMessage(BaseModel):
 
 
 API_BASE = "https://api.lingyiwanwu.com/v1"
-API_KEY = "0bee9ae910e8447d84fe20238c2ebc25"
+API_KEY = "8e29a997ae204127948e0486439af07c"
 # MODEL = "yi-34b-chat-200k"
 MODEL = "yi-34b-chat-0205"
 
