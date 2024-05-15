@@ -12,6 +12,9 @@
 在国外交易平台直接购买现成账号，3-5元一个
 
 # 方案3 注册 chatgpt4
+## 
+
+
 ## 注册 chatgpt 账号
 
 + 准备一个可以访问 https://chat.openai.com/ 的科学上网工具
@@ -24,7 +27,10 @@
 https://www.modb.pro/db/619619
 ### 方案2：iphone 升级 chatgpt4
 + 如何使用国内手机号免费注册一个美区Apple ID: https://zhpengfei.com/how-to-register-a-us-apple-id-with-a-domestic-phone-number-for-free/
-+ 淘宝购买礼品卡和虚拟信用卡： https://zhpengfei.com/chatgpt-plus-alipay-guide/
+  + 出现提示`此时无法创建你的账户`, 那么联系苹果客服处理
+  + 不需要海外手机号, 国内手机号即可
++ 美国地址: https://www.haoweichi.com/
++ VPN & Chatgpt 
 
 ## Dall E 3 申请
 chatgpt4 需要申请该功能，才能优先开通 gpt4v 权限；约 1 天左右
