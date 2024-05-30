@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>流程图示例</title>
+    <script src="https://unpkg.com/gojs"></script>
+    <style>
+        #myDiagramDiv {
+            width: 100%;
+            height: 1200px;
+            /* Adjust height as necessary */
+            border: 1px solid black;
+            background-color: lightyellow;
+            /* Background color that doesn't conflict with node colors */
+        }
+    </style>
+    <script>
+
+        nodeWidth = 100
+        nodeHeight = 50
+        function init() {
+            var $ = go.GraphObject.make;
+            var myDiagram = $(go.Diagram, "myDiagramDiv", {
+                "undoManager.isEnabled": true,
+                "click": function (e) { // 点击任意一点反馈坐标
+                    var diagramPoint = e.documentPoint;
+                    console.log("Clicked at x: " + diagramPoint.x.toFixed(2) + ", y: " + diagramPoint.y.toFixed(2))
+                }
+            });
+
+            /**
+             * 点击任意一点反馈坐标
+             */
+            function showCoords(e, obj) {
+                var part = obj.part;
+                var loc = part.location;
+                console.log("Node " + part.data.key + " is at x: " + loc.x.toFixed(2) + ", y: " + loc.y.toFixed(2));
+            }
+
+            myDiagram.nodeTemplate =
+                $(go.Node, "Auto",
+                    { width: nodeWidth, height: nodeHeight, click: showCoords },  // Adding click event
+                    { locationSpot: go.Spot.Center },
+                    new go.Binding("location", "loc", go.Point.parse).makeTwoWay(go.Point.stringify),
+                    $(go.Shape, "RoundedRectangle",
+                        { fill: "white", stroke: null },
+                        new go.Binding("fill", "color")),
+                    $(go.TextBlock,
+                        { margin: 8, stroke: "black", font: "bold 14px sans-serif" },
+                        new go.Binding("text", "key"))
+                );
+
+            myDiagram.linkTemplate =
+                $(go.Link,
+                    { routing: go.Link.Orthogonal, corner: 5 },
+                    new go.Binding("points").makeTwoWay(),
+                    $(go.Shape, { strokeWidth: 2, stroke: "black" }),
+                    $(go.Shape, { toArrow: "Standard", stroke: null, fill: "black" }),
+                    $(go.Panel, "Auto",
+                        $(go.Shape, "Rectangle", { fill: "white", stroke: null }),
+                        $(go.TextBlock,
+                            { textAlign: "center", font: "10pt helvetica, arial, sans-serif", margin: 5, stroke: "black" },
+                            new go.Binding("text", "text"))
+                    )
+                );
+
+
+            const { nodes, links } = array();
+
+            const model = $(go.GraphLinksModel);
+            model.nodeDataArray = nodes.map(node => ({
+                key: node.key,
+                color: node.color,
+                loc: `${node.loc.x} ${node.loc.y}`
+            }));
+
+            model.linkDataArray = links.map(link => {
+                const fromNode = nodes.find(node => node.key === link.from).loc;
+                const toNode = nodes.find(node => node.key === link.to).loc;
+                const points = calculateLinkPoints(fromNode, toNode, link.startEndPoints, link.customPoints);
+
+                return {
+                    from: link.from,
+                    to: link.to,
+                    text: link.text,
+                    points: points
+                };
+            });
+
+            myDiagram.model = model;
+            window.myDiagram = myDiagram;
+
+        }
+
+        function calculateLinkPoints(fromNode, toNode, startEndPoints = [], customPoints = []) {
+
+            const fromX = fromNode.x;
+            const fromY = fromNode.y;
+            const toX = toNode.x;
+            const toY = toNode.y;
+
+            pointsStart = {}
+            pointsEnd = {}
+            if (startEndPoints.length != 2) { // 默认控制点
+                if (fromY < toY) { // 开始节点在上方
+                    pointsStart = getNodeCoordinate(fromNode, CoordinateType.DOWN)
+                    pointsEnd = getNodeCoordinate(toNode, CoordinateType.UP)
+                }
+                if (fromY === toY) { // 同一水平面
+                    // if (fromX < toX) { // 同一水平面, 右侧
+                    //     pointsStart = { x: fromX, y: fromY }
+                    //     pointsEnd = { x: toX, y: toY }
+                    // }
+                }
+                if (fromY > toY) { // 开始节点在下方
+                    if (fromX < toX) { // 左侧 
+                        pointsStart = getNodeCoordinate(fromNode, CoordinateType.RIGHT)
+                        pointsEnd = getNodeCoordinate(toNode, CoordinateType.LEFT)
+                    }
+                    if (fromX > toX) { // 右侧
+                        pointsStart = getNodeCoordinate(fromNode, CoordinateType.LEFT)
+                        pointsEnd = getNodeCoordinate(toNode, CoordinateType.RIGHT)
+                    }
+                }
+
+            } else { // 自定义控制点
+                pointsStart = getNodeCoordinate(fromNode, startEndPoints[0])
+                pointsEnd = getNodeCoordinate(toNode, startEndPoints[1])
+            }
+
+            const points = [pointsStart]; // 起始点
+
+            // 添加自定义点
+            for (let point of customPoints) {
+                points.push(point);
+            }
+
+            if (fromX !== toX && fromY !== toY) {
+                if (customPoints.length === 0) { // 如果没有自定义点，使用默认折线点
+                    if (fromY < toY) { // 开始节点在上方
+                        const midY = fromY + (toY - fromY) / 2;
+                        points.push({ x: fromX, y: midY });
+                        points.push({ x: toX, y: midY });
+                    }
+                    if (fromY > toY) { // 开始节点在下方
+                        if (fromX < toX) { // 左侧
+                            const midX = fromX + (toX - fromX) / 2;
+                            points.push({ x: midX, y: fromY });
+                            points.push({ x: midX, y: toY });
+                        }
+                        if (fromX > toX) { // 右侧
+                            const midX = fromX + (toX - fromX) / 2;
+                            points.push({ x: midX, y: fromY });
+                            points.push({ x: midX, y: toY });
+                        }
+                    }
+                }
+            }
+
+            points.push(pointsEnd); // 结束点
+
+            return points;
+        }
+
+        const CoordinateType = {
+            UP: 'up',
+            DOWN: 'down',
+            RIGHT: 'right',
+            LEFT: 'left'
+        };
+
+        /**
+         * 获取节点坐标
+         */
+        function getNodeCoordinate(node, coordinateType) {
+            const x = node.x
+            const y = node.y
+            switch (coordinateType) {
+                case CoordinateType.UP:
+                    return { x: x, y: y - nodeHeight / 2 }
+                case CoordinateType.DOWN:
+                    return { x: x, y: y + nodeHeight / 2 }
+                case CoordinateType.RIGHT:
+                    return { x: x + nodeWidth / 2, y: y }
+                case CoordinateType.LEFT:
+                    return { x: x - nodeWidth / 2, y: y }
+            }
+        }
+
+        /**
+         * 获取文件名
+         */
+        function getFileName() {
+            var url = window.location.pathname;
+            var fileName = url.substring(url.lastIndexOf('/') + 1);
+            fileName = decodeURIComponent(fileName); // Decode URL-encoded characters
+            var nameWithoutExtension = fileName.substring(0, fileName.lastIndexOf('.'));
+            return nameWithoutExtension;
+        }
+
+        /**
+         * 导出透明背景的流程图, 
+         * 并且忽略多余的背景, 以 node 最大边界导出
+         */
+        function exportTransparent(ifBackground = false) {
+            var diagramBounds = myDiagram.documentBounds;
+            var padding = 10; // 设置导出图像的边距
+
+            // Adjust the bounds to include the padding
+            var boundsWithPadding = new go.Rect(
+                diagramBounds.x - padding,
+                diagramBounds.y - padding,
+                diagramBounds.width + 2 * padding,
+                diagramBounds.height + 2 * padding
+            );
+
+            var img
+            if (!ifBackground) {
+                img = myDiagram.makeImage({
+                    scale: 1,
+                    position: boundsWithPadding.position,
+                    size: boundsWithPadding.size,
+                    background: "rgba(0,0,0,0)" // 设置透明背景
+                });
+            } else {
+                // 获取背景颜色
+                const backgroundColor = window.getComputedStyle(document.getElementById('myDiagramDiv')).backgroundColor;
+
+                img = myDiagram.makeImage({
+                    scale: 1,
+                    position: boundsWithPadding.position,
+                    size: boundsWithPadding.size,
+                    background: backgroundColor
+                });
+            }
+
+            // Create a link element
+            var link = document.createElement('a');
+            link.href = img.src;
+            link.download = getFileName() + '.png';
+
+            // Trigger the download by programmatically clicking the link
+            document.body.appendChild(link);
+            link.click(); // 调用浏览器默认的保存图片行为
+            document.body.removeChild(link);
+        }
+
+        function array() {
+
+            const nodes = [
+            ];
+
+            // { from: "1", to: "2", text: "3", startEndPoints: [CoordinateType.UP, CoordinateType.UP], customPoints: [{ x: 100, y: 100 }, { x: 300, y: 100 }] },
+            const links = [
+            ];
+
+            return { nodes, links };
+        }
+
+
+    </script>
+</head>
+
+<body onload="init()">
+    <button onclick="exportTransparent()">Export Transparent Image</button>
+    <button onclick="exportTransparent(true)">Export Transparent Image With Background</button>
+
+    <div id="myDiagramDiv"></div>
+
+</body>
+
+</html>
