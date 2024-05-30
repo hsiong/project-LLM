@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>系统架构图</title>
+  <style>
+    body {
+font-family: 'Arial', sans-serif;
+background-color: #FAF9DE;
+color: #333;
+display: flex;
+flex-wrap: wrap;
+justify-content: center;
+padding: 20px;
+}
+.main-module {
+border: 2px solid #333;
+margin: 10px;
+padding: 10px;
+border-radius: 10px;
+box-shadow: 2px 2px 5px #888888;
+width: 300px;
+position: relative;
+min-height: 200px;
+}
+.module-title {
+font-weight: bold;
+color: #333;
+margin-bottom: 5px;
+}
+.sub-module {
+background: linear-gradient(to right, #d6dde3 0%, #fcfaf3 100%); /* 从左到右的渐变，从淡灰蓝到白 */
+color: #2c3e50; /* 深蓝灰色，提供良好的可读性 */
+margin: 5px;
+padding: 5px;
+border-radius: 8px;
+box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2); /* 恰当的阴影以增强视觉层次感 */
+}
+.main-module:nth-child(1) {
+background-color: #E9EBFE;
+}
+.main-module:nth-child(2) {
+background-color: #BFD7ED;
+}
+.main-module:nth-child(3) {
+background-color: #A4D4AE;
+}
+.main-module:nth-child(4) {
+background-color: #CBE4F9;
+}
+.main-module:nth-child(5) {
+background-color: #FBE4E8;
+}
+.main-module:nth-child(6) {
+background-color: #F9E4C8;
+}
+
+.centered-title {
+text-align: center;
+margin-top: 20px;
+margin-bottom: 20px;
+width: 100%; /* 确保标题占满整行 */
+}
+  </style>
+</head>
+
+<body>
+<h1 class="centered-title">建设清单</h1>  <!-- 添加 class 以应用 CSS 样式 -->
+<div class="main-module">
+  <div class="module-title">父级1</div>
+  <div class="sub-module">内容</div>
+</div>
+
+</body>
+
+</html>

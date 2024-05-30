@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>系统架构图</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #FAF9DE;
+      color: #333;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .system-module {
+      border: 2px solid #333;
+      margin: 10px;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 2px 2px 5px #888888;
+      position: relative;
+
+    }
+
+    .main-module {
+      border: 2px solid #333;
+      margin: 10px;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 2px 2px 5px #888888;
+      width: 300px;
+    }
+
+    .module-title {
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 15px;
+    }
+
+    .sub-module {
+      background: linear-gradient(to right, #d6dde3 0%, #fcfaf3 100%);
+      color: #2c3e50;
+      margin: 10px;
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .system-module:nth-child(1) {
+      background-color: #E9EBFE;
+    }
+
+    .system-module:nth-child(2) {
+      background-color: #DCE2F1;
+    }
+
+    .system-module:nth-child(3) {
+      background-color: #FBE4E8;
+    }
+
+    .system-module:nth-child(4) {
+      background-color: #CBE4F9;
+    }
+
+    .system-module:nth-child(5) {
+      background-color: #A4D4AE;
+    }
+
+    .system-module:nth-child(6) {
+      background-color: #F9E4C8;
+    }
+
+    .centered-title {
+      text-align: center;
+      margin-top: 20px;
+      margin-bottom: 20px;
+      width: 100%;
+    }
+  </style>
+</head>
+
+<body>
+  <h1 class="centered-title">系统架构图</h1>
+
+  <div class="system-module">
+    <div class="module-title">父级1</div>
+
+    <div class="main-module">
+      <div class="module-title">父级2</div>
+      <div class="sub-module">内容</div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
