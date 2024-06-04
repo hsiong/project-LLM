@@ -72,7 +72,7 @@
 
 ![Screenshot 2023-10-24 at 10.31.31](/Users/vjf/Library/Application Support/typora-user-images/Screenshot 2023-10-24 at 10.31.31.png)
 
-### AI 文本纠错
+### AI 文本纠错(已废弃)
 
 选定文字, 悬浮框会弹出 WPS AI 助手, 
 
