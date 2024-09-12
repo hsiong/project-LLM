@@ -124,3 +124,5 @@ http://www.360doc.com/content/12/0121/07/77158047_1083248145.shtml
 **作用**：扩展了模型的功能，使其能够执行计算、访问数据库、获取实时数据等。
 
 **特点**：属于 LLM 内部的机制，主要关注模型如何与外部函数接口交互。
+
++ ChatGLM调教指南: https://mindformers.readthedocs.io/zh-cn/latest/docs/model_cards/glm.html
