@@ -8,7 +8,7 @@
     <style>
         #myDiagramDiv {
             width: 100%;
-            height: 1200px;
+            height: 1800px;
             /* Adjust height as necessary */
             border: 1px solid black;
             background-color: lightyellow;
@@ -19,6 +19,65 @@
 
         nodeWidth = 100
         nodeHeight = 50
+
+        /**
+         * 获取文件名
+         */
+        function getFileName() {
+            var url = window.location.pathname;
+            var fileName = url.substring(url.lastIndexOf('/') + 1);
+            fileName = decodeURIComponent(fileName); // Decode URL-encoded characters
+            var nameWithoutExtension = fileName.substring(0, fileName.lastIndexOf('.'));
+            return nameWithoutExtension;
+        }
+
+        /**
+         * 导出透明背景的流程图, 
+         * 并且忽略多余的背景, 以 node 最大边界导出
+         */
+        function exportTransparent(ifBackground = false) {
+            var diagramBounds = myDiagram.documentBounds;
+            var padding = 10; // 设置导出图像的边距
+
+            // Adjust the bounds to include the padding
+            var boundsWithPadding = new go.Rect(
+                diagramBounds.x - padding,
+                diagramBounds.y - padding,
+                diagramBounds.width + 2 * padding,
+                diagramBounds.height + 2 * padding
+            );
+
+            var img
+            if (!ifBackground) {
+                img = myDiagram.makeImage({
+                    scale: 1,
+                    position: boundsWithPadding.position,
+                    size: boundsWithPadding.size,
+                    background: "rgba(0,0,0,0)" // 设置透明背景
+                });
+            } else {
+                // 获取背景颜色
+                const backgroundColor = window.getComputedStyle(document.getElementById('myDiagramDiv')).backgroundColor;
+
+                img = myDiagram.makeImage({
+                    scale: 1,
+                    position: boundsWithPadding.position,
+                    size: boundsWithPadding.size,
+                    background: backgroundColor
+                });
+            }
+
+            // Create a link element
+            var link = document.createElement('a');
+            link.href = img.src;
+            link.download = getFileName() + '.png';
+
+            // Trigger the download by programmatically clicking the link
+            document.body.appendChild(link);
+            link.click(); // 调用浏览器默认的保存图片行为
+            document.body.removeChild(link);
+        }
+
         function init() {
             var $ = go.GraphObject.make;
             var myDiagram = $(go.Diagram, "myDiagramDiv", {
@@ -30,12 +89,12 @@
             });
 
             /**
-             * 点击任意一点反馈坐标
+             * 点击任意node反馈坐标
              */
             function showCoords(e, obj) {
                 var part = obj.part;
                 var loc = part.location;
-                console.log("Node " + part.data.key + " is at x: " + loc.x.toFixed(2) + ", y: " + loc.y.toFixed(2));
+                console.log("Node " + part.data.name + " is at x: " + loc.x.toFixed(2) + ", y: " + loc.y.toFixed(2));
             }
 
             myDiagram.nodeTemplate =
@@ -50,13 +109,17 @@
                         { margin: 8, stroke: "black", font: "bold 14px sans-serif" },
                         new go.Binding("text", "key"))
                 );
-
             myDiagram.linkTemplate =
                 $(go.Link,
                     { routing: go.Link.Orthogonal, corner: 5 },
                     new go.Binding("points").makeTwoWay(),
-                    $(go.Shape, { strokeWidth: 2, stroke: "black" }),
-                    $(go.Shape, { toArrow: "Standard", stroke: null, fill: "black" }),
+                    $(go.Shape, { strokeWidth: 2, stroke: "black" }), // 箭头线
+                    $(go.Shape, { toArrow: "Standard", stroke: null, fill: "black" }), // 终止箭头
+                    $(go.Shape, { fromArrow: "Backward", stroke: null, fill: "black" },
+                        new go.Binding("visible", "isBidirectional", function (isBidirectional = false) {
+                            return isBidirectional
+                        })
+                    ), // 根据数据中的属性决定是否显示起始箭头, 并设置箭头方向
                     $(go.Panel, "Auto",
                         $(go.Shape, "Rectangle", { fill: "white", stroke: null }),
                         $(go.TextBlock,
@@ -64,6 +127,7 @@
                             new go.Binding("text", "text"))
                     )
                 );
+
 
 
             const { nodes, links } = array();
@@ -84,8 +148,9 @@
                     from: link.from,
                     to: link.to,
                     text: link.text,
-                    points: points
-                };
+                    points: points,
+                    isBidirectional: link.isBidirectional ? true : false
+                }; // 注意需要在此处同步新属性
             });
 
             myDiagram.model = model;
@@ -188,72 +253,22 @@
             }
         }
 
-        /**
-         * 获取文件名
-         */
-        function getFileName() {
-            var url = window.location.pathname;
-            var fileName = url.substring(url.lastIndexOf('/') + 1);
-            fileName = decodeURIComponent(fileName); // Decode URL-encoded characters
-            var nameWithoutExtension = fileName.substring(0, fileName.lastIndexOf('.'));
-            return nameWithoutExtension;
-        }
-
-        /**
-         * 导出透明背景的流程图, 
-         * 并且忽略多余的背景, 以 node 最大边界导出
-         */
-        function exportTransparent(ifBackground = false) {
-            var diagramBounds = myDiagram.documentBounds;
-            var padding = 10; // 设置导出图像的边距
-
-            // Adjust the bounds to include the padding
-            var boundsWithPadding = new go.Rect(
-                diagramBounds.x - padding,
-                diagramBounds.y - padding,
-                diagramBounds.width + 2 * padding,
-                diagramBounds.height + 2 * padding
-            );
-
-            var img
-            if (!ifBackground) {
-                img = myDiagram.makeImage({
-                    scale: 1,
-                    position: boundsWithPadding.position,
-                    size: boundsWithPadding.size,
-                    background: "rgba(0,0,0,0)" // 设置透明背景
-                });
-            } else {
-                // 获取背景颜色
-                const backgroundColor = window.getComputedStyle(document.getElementById('myDiagramDiv')).backgroundColor;
-
-                img = myDiagram.makeImage({
-                    scale: 1,
-                    position: boundsWithPadding.position,
-                    size: boundsWithPadding.size,
-                    background: backgroundColor
-                });
-            }
-
-            // Create a link element
-            var link = document.createElement('a');
-            link.href = img.src;
-            link.download = getFileName() + '.png';
-
-            // Trigger the download by programmatically clicking the link
-            document.body.appendChild(link);
-            link.click(); // 调用浏览器默认的保存图片行为
-            document.body.removeChild(link);
-        }
-
         function array() {
 
             const nodes = [
+                { key: "应用", color: "lightsteelblue", loc: { x: 200, y: 800 } },
+                { key: "cloud", color: "lightseagreen", loc: { x: 200, y: 600 } },
+                { key: "边缘计算", color: "lightsalmon", loc: { x: 400, y: 600 } },
+                { key: "项目(金融/气象/交易/政务/运营)", color: "lightblue", loc: { x: -200, y: 1000 } },
+
             ];
 
-            // { from: "1", to: "2", text: "3", startEndPoints: [CoordinateType.UP, CoordinateType.UP], customPoints: [{ x: 100, y: 100 }, { x: 300, y: 100 }] },
             const links = [
+                { from: "边缘计算", to: "应用", text: "服务优化" },
+                { from: "应用", to: "项目(金融/气象/交易/政务/运营)", text: "应用场景", startEndPoints: [CoordinateType.DOWN, CoordinateType.RIGHT], customPoints: [{ x: 200, y: 1000 }] },
+                { from: "cloud", to: "边缘计算", text: "云边协同", isBidirectional: true },
             ];
+
 
             return { nodes, links };
         }
@@ -265,7 +280,6 @@
 <body onload="init()">
     <button onclick="exportTransparent()">Export Transparent Image</button>
     <button onclick="exportTransparent(true)">Export Transparent Image With Background</button>
-
     <div id="myDiagramDiv"></div>
 
 </body>
