@@ -135,12 +135,21 @@
             }));
 
             model.linkDataArray = links.map(link => {
-                const fromNode = nodes.find(node => node.key === link.from).loc;
-                const node = nodes.find(node => node.key === link.to)
-                if (!node)
+
+                const node_0 = nodes.find(node => node.key === link.from)
+                if (!node_0)
+                    throw new Error(`节点 ${link.from} 不存在`);
+                const fromNode = node_0.loc;
+                const node_1 = nodes.find(node => node.key === link.to)
+                if (!node_1)
                     throw new Error(`节点 ${link.to} 不存在`);
-                const toNode = node.loc;
-                const points = calculateLinkPoints(fromNode, toNode, link.startEndPoints, link.customPoints);
+                const toNode = node_1.loc;
+                points = null
+                try {
+                    points = calculateLinkPoints(fromNode, toNode, link.startEndPoints, link.customPoints)
+                } catch (error) {
+                    console.error(`${link.from} -> ${link.to} 转折点计算错误:`, error)
+                }
 
                 return {
                     from: link.from,
@@ -199,8 +208,8 @@
             }
 
             if (customPoints.length === 0 && startEndPoints.length != 0) { // 使用自定义控制点且未添加自定义点
-                turningNode1 = getTurningNodeCoordinate(fromNode)
-                turningNode2 = getTurningNodeCoordinate(toNode)
+                turningNode1 = getTurningNodeCoordinate(fromNode, toNode, startEndPoints[0])
+                turningNode2 = getTurningNodeCoordinate(toNode, fromNode, startEndPoints[1])
                 points.push(turningNode1, turningNode2);
             }
 
@@ -259,19 +268,27 @@
         /**
          * 获取转折点节点坐标
          */
-        function getTurningNodeCoordinate(node, coordinateType) {
+        function getTurningNodeCoordinate(node, next_node, coordinateType) {
             const x = node.x
             const y = node.y
-            const divisor = 1 / 3 * 2
+            const next_node_x = next_node.x
+            const next_node_y = next_node.y
+
+            if (next_node_x === x || next_node_y === y) {
+                throw new Error(`节点不能为同一水平/垂直线`);
+            }
+
+            const next_node_x_abs = Math.abs(next_node.x - node.x) // 绝对值
+            const next_node_y_abs = Math.abs(next_node.y - node.y) // 绝对值
             switch (coordinateType) {
                 case CoordinateType.UP:
-                    return { x: x, y: y - nodeHeight * divisor}
+                    return { x: x, y: y + next_node_y_abs / 2 }
                 case CoordinateType.DOWN:
-                    return { x: x, y: y + nodeHeight * divisor }
+                    return { x: x, y: y - next_node_y_abs / 2 }
                 case CoordinateType.RIGHT:
-                    return { x: x + nodeWidth * divisor, y: y }
+                    return { x: x + next_node_x_abs / 2, y: y }
                 case CoordinateType.LEFT:
-                    return { x: x - nodeWidth * divisor, y: y }
+                    return { x: x - next_node_x_abs / 2, y: y }
             }
         }
 
