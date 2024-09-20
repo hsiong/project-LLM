@@ -54,7 +54,7 @@
                     position: boundsWithPadding.position,
                     size: boundsWithPadding.size,
                     background: "rgba(0,0,0,0)", // 设置透明背景
-                    maxSize: new go.Size(boundsWithPadding.width, Infinity),
+                    maxSize: new go.Size(boundsWithPadding.width, Infinity), // 允许导出无限大小
                 });
             } else {
                 // 获取背景颜色
@@ -65,7 +65,7 @@
                     position: boundsWithPadding.position,
                     size: boundsWithPadding.size,
                     background: backgroundColor,
-                    maxSize: new go.Size(boundsWithPadding.width, Infinity),
+                    maxSize: new go.Size(boundsWithPadding.width, Infinity), 
                 });
             }
 
