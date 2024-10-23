@@ -126,3 +126,8 @@ http://www.360doc.com/content/12/0121/07/77158047_1083248145.shtml
 **特点**：属于 LLM 内部的机制，主要关注模型如何与外部函数接口交互。
 
 + ChatGLM调教指南: https://mindformers.readthedocs.io/zh-cn/latest/docs/model_cards/glm.html
+
+## ChatGLM-6B 昇腾910B 推理
+
++ https://www.hiascend.com/software/modelzoo/models/detail/892001d920694836ae7b7c25c3b5a066
++ https://juejin.cn/post/7254446353367482423
