@@ -1,4 +1,8 @@
 
+## 列表
++ 可视化使用 table 
++ 长文理解/embadding 使用 csv 格式, 不要使用 table => 节约 token
++ 
 
 ## 避免使用内部库
 
