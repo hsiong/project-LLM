@@ -106,7 +106,7 @@
 
 RAG（Retrieval-Augmented Generation）是**检索增强生成**模型的简称，它结合了信息检索和生成式模型的能力，旨在通过从外部知识库中检索相关信息来增强生成模型的表现，尤其是在回答开放式问题或处理特定领域任务时。
 
-参考链接: [Rag.md](Rag.md)
+参考链接: [Rag.md](RAG/Rag.md)
 
 ### 函数调用(Function Call)
 
