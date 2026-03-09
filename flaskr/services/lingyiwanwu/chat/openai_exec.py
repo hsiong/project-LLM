@@ -44,6 +44,12 @@ def excute(messages: List[PerMessage]) -> ChatCompletion:
 
 
 def re_excute(oldAnswer: PerMessage, msg: List[PerMessage]) -> str:
+	'''
+	
+	:param oldAnswer: 
+	:param msg: 
+	:return: 
+	'''
 	oldContent = oldAnswer.content
 	appendMsg = PerMessage(**oldAnswer.dict())  # 使用字典解包拷贝, 将生成答案附在msg内
 	msg.append(appendMsg)
