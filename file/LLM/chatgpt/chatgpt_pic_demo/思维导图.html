@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>思维导图</title>
+    <script src="https://unpkg.com/gojs/release/go.js"></script>
+    <style>
+        #myDiagramDiv {
+            width: 100%;
+            height: 1000px;
+            border: 1px solid black;
+            background-color: #FAF9DE;
+        }
+    </style>
+</head>
+
+<body>
+<h1>思维导图</h1>
+<button onclick="exportTransparent()">Export Transparent Image</button>
+<button onclick="exportTransparent(true)">Export Transparent Image With Background</button>
+<div id="myDiagramDiv"></div>
+
+<script>
+
+    /**
+* 获取文件名
+*/
+function getFileName() {
+var url = window.location.pathname;
+var fileName = url.substring(url.lastIndexOf('/') + 1);
+fileName = decodeURIComponent(fileName); // Decode URL-encoded characters
+var nameWithoutExtension = fileName.substring(0, fileName.lastIndexOf('.'));
+return nameWithoutExtension;
+}
+
+/**
+    * 导出透明背景的流程图, 
+    * 并且忽略多余的背景, 以 node 最大边界导出
+    */
+function exportTransparent(ifBackground = false) {
+var diagramBounds = myDiagram.documentBounds;
+var padding = 10; // 设置导出图像的边距
+
+// Adjust the bounds to include the padding
+var boundsWithPadding = new go.Rect(
+    diagramBounds.x - padding,
+    diagramBounds.y - padding,
+    diagramBounds.width + 2 * padding,
+    diagramBounds.height + 2 * padding
+);
+
+var img
+if (!ifBackground) {
+    img = myDiagram.makeImage({
+        scale: 1,
+        position: boundsWithPadding.position,
+        size: boundsWithPadding.size,
+        background: "rgba(0,0,0,0)" // 设置透明背景
+    });
+} else {
+    // 获取背景颜色
+    const backgroundColor = window.getComputedStyle(document.getElementById('myDiagramDiv')).backgroundColor;
+
+    img = myDiagram.makeImage({
+        scale: 1,
+        position: boundsWithPadding.position,
+        size: boundsWithPadding.size,
+        background: backgroundColor
+    });
+}
+
+// Create a link element
+var link = document.createElement('a');
+link.href = img.src;
+link.download = getFileName() + '.png';
+
+// Trigger the download by programmatically clicking the link
+document.body.appendChild(link);
+link.click(); // 调用浏览器默认的保存图片行为
+document.body.removeChild(link);
+}
+
+var $ = go.GraphObject.make;
+
+var myDiagram = $(go.Diagram, "myDiagramDiv", {
+"undoManager.isEnabled": true,
+initialContentAlignment: go.Spot.Center,
+layout: $(go.LayeredDigraphLayout, {
+    columnSpacing: 50,  // 列间距增加到100
+    layerSpacing: 50   // 层间距增加到150，提供更宽敞的视觉效果
+})
+});
+
+myDiagram.nodeTemplate =
+$(go.Node, "Auto",
+    $(go.Shape, "RoundedRectangle",
+        { strokeWidth: 0, fill: "white" },
+        new go.Binding("fill", "color")),
+    $(go.TextBlock,
+        { margin: 8, font: "bold 14px sans-serif", textAlign: "center" },
+        new go.Binding("text", "key"))
+);
+
+myDiagram.linkTemplate =
+$(go.Link,
+    { routing: go.Link.Orthogonal, curve: go.Link.JumpOver, corner: 5 },
+    $(go.Shape, { strokeWidth: 2, stroke: "black" }),
+    $(go.Shape, { toArrow: "Standard", stroke: null, fill: "black" }),
+    $(go.Panel, "Auto",
+        $(go.Shape, "Rectangle",
+            { fill: "white", strokeWidth: 0 }),
+        $(go.TextBlock,
+            { textAlign: "center", font: "10pt helvetica, arial, sans-serif", margin: 5, stroke: "black" },
+            new go.Binding("text", "text"))
+    )
+);
+
+var model = $(go.GraphLinksModel);
+model.nodeDataArray = [
+];
+
+model.linkDataArray = [
+];
+
+myDiagram.model = model;
+
+
+
+</script>
+</body>
+
+</html>
