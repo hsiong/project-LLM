@@ -1,4 +1,4 @@
-1. 完成当前工作区 commit 内容  中文, 禁止读取 `*/application.yml` , `*/application-common.yml`, `.fastRequest/*`, `.mvn/*`, `.idea/*`,
+1. 完成当前工作区 commit 内容  中文, 禁止读取 `*/application.yml` , `*/application-*.yml`, `.fastRequest/*`, `.mvn/*`, `.idea/*`,
    `config/.env.*; 禁止访问和提交 .gitignore
    内提到的内容
 2. 按功能整理(注意不是代码模块，整个功能链路为一个功能模块), 从改动量大到小排序, 无需指明代码文件，无需序号;
@@ -12,3 +12,4 @@
   (选择合适的feat/fix/chore/refactor/style...)
 4. 分多次提交, 并最后告诉我总计改了多少行代码
 5. 我没有加入到git中的文件，禁止你访问
+6. 禁止自做聪明改我的代码
